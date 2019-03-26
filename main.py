@@ -56,7 +56,7 @@ plp.LpConstraint(
        for j in set_J}
 
 
-objective = plp.sum(x_vars[i,j] * c[i,j]
+objective = plp.lpSum(x_vars[i,j] * c[i,j]
                     for i in set_I
                     for j in set_J)
 
