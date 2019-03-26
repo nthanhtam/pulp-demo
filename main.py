@@ -3,23 +3,23 @@ opt_model = plp.LpProblem(name="MIP Model")
 
 # if x is Continuous
 x_vars  = {(i,j):
-plp.LpVariable(cat=plp.LpContinuous, 
-               lowBound=l[i,j], upBound=u[i,j], 
-               name="x_{0}_{1}".format(i,j)) 
+plp.LpVariable(cat=plp.LpContinuous,
+               lowBound=l[i,j], upBound=u[i,j],
+               name="x_{0}_{1}".format(i,j))
 for i in set_I for j in set_J}
 # if x is Binary
 x_vars  = {(i,j):
-plp.LpVariable(cat=plp.LpBinary, name="x_{0}_{1}".format(i,j)) 
+plp.LpVariable(cat=plp.LpBinary, name="x_{0}_{1}".format(i,j))
 for i in set_I for j in set_J}
 # if x is Integer
 x_vars  = {(i,j):
-plp.LpVariable(cat=plp.LpInteger, 
+plp.LpVariable(cat=plp.LpInteger,
                lowBound=l[i,j], upBound= u[i,j],
-               name="x_{0}_{1}".format(i,j)) 
+               name="x_{0}_{1}".format(i,j))
 for i in set_I for j in set_J}
 
 # Less than equal constraints
-constraints = {j : 
+constraints = {j :
 plp.LpConstraint(
              e=plp.lpSum(a[i,j] * x_vars[i,j] for i in set_I),
              sense=plp.plp.LpConstraintLE,
@@ -27,7 +27,7 @@ plp.LpConstraint(
              name="constraint_{0}".format(j))
        for j in set_J}
 # >= constraints
-constraints = {j : 
+constraints = {j :
 plp.LpConstraint(
              e=plp.lpSum(a[i,j] * x_vars[i,j] for i in set_I),
              sense=plp.LpConstraintGE,
@@ -35,20 +35,20 @@ plp.LpConstraint(
              name="constraint_{0}".format(j))
        for j in set_J}
 # == constraints
-constraints = {j : 
+constraints = {j :
 plp.LpConstraint(
              e=plp.lpSum(a[i,j] * x_vars[i,j] for i in set_I),
              sense=plp.LpConstraintEQ,
              rhs=b[j],
              name="constraint_{0}".format(j))
        for j in set_J}
-       
-       
- objective = plp.sum(x_vars[i,j] * c[i,j] 
-                    for i in set_I 
+
+
+objective = plp.sum(x_vars[i,j] * c[i,j]
+                    for i in set_I
                     for j in set_J)
-                    
-                    
+
+
 # for maximization
 opt_model.sense = plp.LpMaximize
 # for minimization
@@ -63,15 +63,15 @@ opt_model.solve(solver = GLPK_CMD())
 
 
 import pandas as pd
-opt_df = pd.DataFrame.from_dict(x_vars, orient="index", 
+opt_df = pd.DataFrame.from_dict(x_vars, orient="index",
                                 columns = ["variable_object"])
-opt_df.index = 
-     pd.MultiIndex.from_tuples(opt_df.index, 
+opt_df.index =
+     pd.MultiIndex.from_tuples(opt_df.index,
                                names=["column_i", "column_j"])
 opt_df.reset_index(inplace=True)
 
 
-opt_df["solution_value"] = 
-  opt_df["variable_object"].apply(lambda item: item.varValue)
+opt_df["solution_value"] =
+opt_df["variable_object"].apply(lambda item: item.varValue)
 opt_df.drop(columns=["variable_object"], inplace=True)
 opt_df.to_csv("./optimization_solution.csv")
