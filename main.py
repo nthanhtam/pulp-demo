@@ -65,13 +65,11 @@ opt_model.solve(solver = GLPK_CMD())
 import pandas as pd
 opt_df = pd.DataFrame.from_dict(x_vars, orient="index",
                                 columns = ["variable_object"])
-opt_df.index =
-     pd.MultiIndex.from_tuples(opt_df.index,
+opt_df.index = pd.MultiIndex.from_tuples(opt_df.index,
                                names=["column_i", "column_j"])
 opt_df.reset_index(inplace=True)
 
 
-opt_df["solution_value"] =
-opt_df["variable_object"].apply(lambda item: item.varValue)
+opt_df["solution_value"] = opt_df["variable_object"].apply(lambda item: item.varValue)
 opt_df.drop(columns=["variable_object"], inplace=True)
 opt_df.to_csv("./optimization_solution.csv")
