@@ -34,7 +34,7 @@ for i in set_I for j in set_J}
 constraints = {j :
 plp.LpConstraint(
              e=plp.lpSum(a[i,j] * x_vars[i,j] for i in set_I),
-             sense=plp.plp.LpConstraintLE,
+             sense=plp.LpConstraintLE,
              rhs=b[j],
              name="constraint_{0}".format(j))
        for j in set_J}
