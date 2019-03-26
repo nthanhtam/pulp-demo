@@ -11,6 +11,7 @@ b = {j: random.randint(0,30) for j in set_J}
 
 
 import pulp as plp
+from pulp.solvers import GLPK_CMD
 opt_model = plp.LpProblem(name="MIP Model")
 
 # if x is Continuous
